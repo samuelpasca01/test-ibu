@@ -1,3 +1,6 @@
+<!-- QUESTO METATAG È FONDAMENTALE PER IL MOBILE FIRST: BLOCCA LO ZOOM AUTOMATICO -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <style>
   :root {
     --bg-main: #0b0f19;
@@ -5,8 +8,8 @@
     --card-border: rgba(255, 255, 255, 0.05);
     --text-main: #f3f4f6;
     --text-muted: #9ca3af;
-    --accent-primary: #d97706; /* Oro/Ambra moderno */
-    --accent-secondary: #ef4444; /* Rosso vibrante */
+    --accent-primary: #d97706;
+    --accent-secondary: #ef4444;
     --color-correct: #10b981;
     --color-correct-bg: rgba(16, 185, 129, 0.12);
     --color-wrong: #f43f5e;
@@ -18,6 +21,11 @@
   * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    width: 100%;
+    overflow-x: hidden; /* Previene lo scorrimento laterale fastidioso su mobile */
   }
 
   body {
@@ -33,7 +41,8 @@
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    padding: 20px 16px 48px;
+    padding: 16px 12px 40px; /* Margini più stretti per sfruttare tutto lo schermo mobile */
+    width: 100%;
   }
 
   .quiz-card {
@@ -41,49 +50,50 @@
     max-width: 500px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 16px;
   }
 
   .quiz-header {
     text-align: center;
-    padding: 8px 0;
+    padding: 8px 4px;
   }
 
   .quiz-eyebrow {
     font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     color: var(--accent-primary);
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
 
   .quiz-title {
-    font-size: 24px;
+    font-size: 22px; /* Font leggermente ottimizzato per l'impatto iniziale */
     font-weight: 800;
     line-height: 1.25;
     color: #ffffff;
-    margin: 0 0 8px;
+    margin: 0 0 6px;
   }
 
   .quiz-sub {
     font-size: 14px;
     color: var(--text-muted);
+    line-height: 1.4;
   }
 
   .progress-row {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     background: var(--card-bg);
-    padding: 14px 18px;
+    padding: 14px 16px;
     border-radius: var(--border-radius);
     border: 1px solid var(--card-border);
   }
 
   .progress-track {
     flex: 1;
-    height: 6px;
+    height: 8px; /* Leggermente più spessa per vederla meglio su schermi piccoli */
     background: #1f2937;
     border-radius: 99px;
     overflow: hidden;
@@ -97,7 +107,7 @@
   }
 
   .progress-label {
-    font-size: 13px;
+    font-size: 14px; /* Più leggibile */
     font-weight: 700;
     color: #ffffff;
     font-variant-numeric: tabular-nums;
@@ -106,24 +116,24 @@
   .question-box {
     background: var(--card-bg);
     border-radius: var(--border-radius);
-    padding: 24px;
+    padding: 20px; /* Padding interno ottimizzato per mobile */
     border: 1px solid var(--card-border);
     box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
   }
 
   .q-number {
-    font-size: 11px;
+    font-size: 12px;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
     color: var(--text-muted);
     font-weight: 600;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .q-text {
-    font-size: 19px;
-    line-height: 1.45;
-    margin: 0 0 24px;
+    font-size: 18px; /* Dimensione aumentata per eliminare lo zoom manuale */
+    line-height: 1.5;
+    margin: 0 0 20px;
     font-weight: 700;
     color: #ffffff;
   }
@@ -137,7 +147,7 @@
   .option-btn {
     text-align: left;
     font-family: inherit;
-    font-size: 15px;
+    font-size: 16px; /* Ottimo per il touch su mobile */
     line-height: 1.4;
     font-weight: 500;
     padding: 16px;
@@ -148,11 +158,12 @@
     cursor: pointer;
     transition: var(--transition);
     display: flex;
-    gap: 14px;
+    gap: 12px;
     align-items: center;
     width: 100%;
   }
 
+  /* Rimuove l'effetto hover fastidioso su mobile durante il touch */
   @media (hover: hover) {
     .option-btn:hover:not(:disabled) {
       border-color: var(--accent-primary);
@@ -169,15 +180,14 @@
     font-weight: 700;
     color: var(--text-muted);
     background: #1f2937;
-    width: 26px;
-    height: 26px;
+    width: 28px; /* Pulsante lettera leggermente più grande */
+    height: 28px;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: 13px;
     flex-shrink: 0;
-    transition: var(--transition);
   }
 
   .option-btn.correct {
@@ -201,18 +211,18 @@
   }
 
   .option-btn.dim {
-    opacity: 0.25;
+    opacity: 0.2;
   }
 
   .feedback-row {
-    margin-top: 24px;
+    margin-top: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     min-height: 48px;
     border-top: 1px solid #1f2937;
-    padding-top: 18px;
+    padding-top: 16px;
   }
 
   .feedback-msg {
@@ -224,9 +234,9 @@
 
   .next-btn, .restart-btn {
     font-family: inherit;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
-    padding: 12px 22px;
+    padding: 12px 20px;
     background: #ffffff;
     color: var(--bg-main);
     border: none;
@@ -236,27 +246,21 @@
     white-space: nowrap;
   }
 
-  .next-btn:hover, .restart-btn:hover {
-    background: #e5e7eb;
-    transform: translateY(-1px);
-  }
-
   .result-box {
     background: var(--card-bg);
     border-radius: var(--border-radius);
-    padding: 36px 24px;
+    padding: 32px 20px;
     text-align: center;
     border: 1px solid var(--card-border);
     box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
   }
 
   .result-score {
-    font-size: 72px;
+    font-size: 64px;
     font-weight: 900;
     color: var(--accent-primary);
     line-height: 1;
-    margin-bottom: 12px;
-    letter-spacing: -0.03em;
+    margin-bottom: 8px;
   }
 
   .result-label {
@@ -264,15 +268,15 @@
     font-weight: 700;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
   }
 
   .result-verdict {
     font-size: 16px;
     line-height: 1.5;
     color: #ffffff;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
   }
 
   .review-list {
@@ -280,13 +284,13 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
   }
 
   .review-item {
     font-size: 14px;
     line-height: 1.5;
-    padding: 16px;
+    padding: 14px;
     border-radius: var(--border-radius);
     border: 1px solid transparent;
   }
@@ -306,38 +310,37 @@
 
   .review-q {
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     color: #ffffff;
   }
 
   .review-meta {
     font-size: 13px;
     color: var(--text-muted);
+    line-height: 1.4;
   }
 
   .restart-btn {
     width: 100%;
     padding: 16px;
-    font-size: 15px;
+    font-size: 16px;
     background: linear-gradient(135deg, var(--accent-primary), #f59e0b);
     color: #ffffff;
-  }
-  .restart-btn:hover {
-    filter: brightness(1.1);
   }
 
   .footer-note {
     margin-top: 14px;
     text-align: center;
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-muted);
   }
 
+  /* MEDIA QUERY SPECIFICA PER SMARTPHONE (Sotto i 480px di larghezza) */
   @media (max-width: 480px) {
-    .quiz-title { font-size: 22px; }
-    .question-box { padding: 20px; }
+    .quiz-title { font-size: 20px; }
     .q-text { font-size: 17px; }
-    .option-btn { padding: 14px; font-size: 14px; }
+    .option-btn { padding: 14px; font-size: 15px; gap: 10px; }
+    .question-box { padding: 16px; }
   }
 </style>
 
@@ -351,7 +354,7 @@ const QUESTIONS = [
 {q:"Regele care a participat la două cruciade a fost:", opts:["Ludovic al IX-lea al Franței","Napoleon","Henric al IV-lea al Germaniei"], correct:0},
 {q:"Imperiul latin de Răsărit a dăinuit între anii:", opts:["1204-1261","1431-1449","1324-1377"], correct:0},
 {q:"Cea de-a patra cruciadă a avut ca rezultat:", opts:["Cucerirea Ierusalimului","Cucerirea Cartaginei","Cucerirea Constantinopolului"], correct:2},
-{q:"Desființarea ordinului cavalerilor templieri a fost inițiată de:", opts:["Împăratul Carol al V-lea","Regele Franței Filip al IV-lea","Regele Angliei Ioan fără de Țară"], correct:1},
+{q:"Desființarea ordinului cavalerilor templieri a fost inițiată di:", opts:["Împăratul Carol al V-lea","Regele Franței Filip al IV-lea","Regele Angliei Ioan fără de Țară"], correct:1},
 {q:"Ordinul monahal pentru femei similar cu cel franciscan s-a numit:", opts:["Ordinul cluniac","Săracele Clare","Ordinul ursulinelor"], correct:1},
 {q:"Captivitatea Babiloniană a papalității a avut loc între anii:", opts:["1324-1362; 1364-1368","1309-1367; 1370-1377","1305-1360; 1367-1371"], correct:1},
 {q:"Conciliul de la Pisa a avut loc în anul:", opts:["1414","1409","1416"], correct:1},
@@ -365,8 +368,8 @@ const QUESTIONS = [
 {q:"Reprezentantul principal al mișcării anabaptiste din Țările de Jos a fost:", opts:["Theodore Beza","Menno Simons","Philip Schwarzerd Melanchthon"], correct:1},
 {q:"Succesorul reformator al lui Calvin la Geneva a fost:", opts:["Theodore Beza","Johannes Eck","Johann Heinrich Bullinger"], correct:0},
 {q:"Adepții lui Iacobus Arminius și-au publicat ideile în scrierea numită:", opts:["Defensor pacis (Apărătorul păcii)","Protestatio (Mărturisire)","Remonstratio (Protest)"], correct:2},
-{q:"Cel mai important rol în acțiunile de contrareformă l-a avut ordinul monahal:", opts:["Ioanit","Iezuit","Franciscan"], correct:1},
-{q:"Războiul de 30 de ani s-a încheiat prin:", opts:["Pacea de la Westfalia","Pacea de la Augsburg","Pacea de la Geneva"], correct:0},
+{q:"Cel mai important rol în acțiunile di contrareformă l-a avut ordinul monahal:", opts:["Ioanit","Iezuit","Franciscan"], correct:1},
+{q:"Războiul de 30 de ani s-a încheiat prin:", opts:["Pacea di la Westfalia","Pacea di la Augsburg","Pacea di la Geneva"], correct:0},
 {q:"Inițiatorul pietismului german a fost:", opts:["Philip Iacob Spener","Nicolas Storch","Philip Schwarzerd Melanchthon"], correct:0},
 {q:"Fondatorul metodismului a fost:", opts:["Jan Hus","John Wesley","George Whitefield"], correct:1},
 {q:"Patriarhul Constantinopolului care a simpatizat cu protestantismul a fost:", opts:["Kiril Kontaris","Khiril Lukaris","Ignatie al III-lea"], correct:1},
@@ -466,7 +469,7 @@ function renderResult(){
   let verdict;
   if(pct === 100) verdict = "Perfect — ești gata pentru examen.";
   else if(pct >= 80) verdict = "Foarte bine — mai repetă puțin punctele slabe.";
-  else if(pct >= 60) verdict = "Un început bun, dar mai ai de recapitulat.";
+  else if(pct >= 60) verdict = "Un început bun, dar mai ai di recapitulat.";
   else verdict = "Merită o rundă în plus de recapitulare.";
 
   let reviewHtml = '';
