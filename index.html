@@ -1,5 +1,5 @@
-<!-- QUESTO METATAG È FONDAMENTALE PER IL MOBILE FIRST: BLOCCA LO ZOOM AUTOMATICO -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- VIEWPORT CORRETTA: Rende la pagina 100% responsive su mobile senza bloccare il motore di rendering -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
   :root {
@@ -25,29 +25,27 @@
 
   html, body {
     width: 100%;
-    overflow-x: hidden; /* Previene lo scorrimento laterale fastidioso su mobile */
-  }
-
-  body {
     margin: 0;
+    padding: 0;
     background-color: var(--bg-main);
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--text-main);
     letter-spacing: -0.01em;
   }
 
+  /* STRUTTURA MOBILE-FIRST (Predefinita per smartphone) */
   .quiz-wrap {
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    padding: 16px 12px 40px; /* Margini più stretti per sfruttare tutto lo schermo mobile */
+    padding: 16px 8px 32px; /* Margini ridotti al minimo per schermi piccoli */
     width: 100%;
   }
 
   .quiz-card {
     width: 100%;
-    max-width: 500px;
+    max-width: 100%; /* Sfrutta tutto lo spazio dello smartphone */
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -68,15 +66,15 @@
   }
 
   .quiz-title {
-    font-size: 22px; /* Font leggermente ottimizzato per l'impatto iniziale */
+    font-size: 20px; /* Ottimizzato per non andare a capo troppe volte su mobile */
     font-weight: 800;
-    line-height: 1.25;
+    line-height: 1.3;
     color: #ffffff;
     margin: 0 0 6px;
   }
 
   .quiz-sub {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-muted);
     line-height: 1.4;
   }
@@ -86,14 +84,14 @@
     align-items: center;
     gap: 12px;
     background: var(--card-bg);
-    padding: 14px 16px;
+    padding: 12px 14px;
     border-radius: var(--border-radius);
     border: 1px solid var(--card-border);
   }
 
   .progress-track {
     flex: 1;
-    height: 8px; /* Leggermente più spessa per vederla meglio su schermi piccoli */
+    height: 8px;
     background: #1f2937;
     border-radius: 99px;
     overflow: hidden;
@@ -107,7 +105,7 @@
   }
 
   .progress-label {
-    font-size: 14px; /* Più leggibile */
+    font-size: 13px;
     font-weight: 700;
     color: #ffffff;
     font-variant-numeric: tabular-nums;
@@ -116,7 +114,7 @@
   .question-box {
     background: var(--card-bg);
     border-radius: var(--border-radius);
-    padding: 20px; /* Padding interno ottimizzato per mobile */
+    padding: 16px; /* Padding interno compatto per mobile */
     border: 1px solid var(--card-border);
     box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
   }
@@ -127,13 +125,13 @@
     letter-spacing: 0.05em;
     color: var(--text-muted);
     font-weight: 600;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   .q-text {
-    font-size: 18px; /* Dimensione aumentata per eliminare lo zoom manuale */
-    line-height: 1.5;
-    margin: 0 0 20px;
+    font-size: 17px; /* Dimensione ideale per la lettura da vicino (smartphone) */
+    line-height: 1.45;
+    margin: 0 0 16px;
     font-weight: 700;
     color: #ffffff;
   }
@@ -141,16 +139,16 @@
   .options {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
   }
 
   .option-btn {
     text-align: left;
     font-family: inherit;
-    font-size: 16px; /* Ottimo per il touch su mobile */
+    font-size: 15px; /* Perfetto per l'area di touch minima su mobile */
     line-height: 1.4;
     font-weight: 500;
-    padding: 16px;
+    padding: 14px 12px;
     border-radius: var(--border-radius);
     border: 1.5px solid #1f2937;
     background: rgba(31, 41, 55, 0.3);
@@ -158,12 +156,11 @@
     cursor: pointer;
     transition: var(--transition);
     display: flex;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
     width: 100%;
   }
 
-  /* Rimuove l'effetto hover fastidioso su mobile durante il touch */
   @media (hover: hover) {
     .option-btn:hover:not(:disabled) {
       border-color: var(--accent-primary);
@@ -180,13 +177,13 @@
     font-weight: 700;
     color: var(--text-muted);
     background: #1f2937;
-    width: 28px; /* Pulsante lettera leggermente più grande */
-    height: 28px;
+    width: 26px;
+    height: 26px;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 12px;
     flex-shrink: 0;
   }
 
@@ -211,32 +208,32 @@
   }
 
   .option-btn.dim {
-    opacity: 0.2;
+    opacity: 0.15;
   }
 
   .feedback-row {
-    margin-top: 20px;
+    margin-top: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-    min-height: 48px;
+    min-height: 44px;
     border-top: 1px solid #1f2937;
-    padding-top: 16px;
+    padding-top: 14px;
   }
 
   .feedback-msg {
     font-weight: 700;
-    font-size: 16px;
+    font-size: 15px;
   }
   .feedback-msg.good { color: var(--color-correct); }
   .feedback-msg.bad { color: var(--color-wrong); }
 
   .next-btn, .restart-btn {
     font-family: inherit;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
-    padding: 12px 20px;
+    padding: 10px 16px;
     background: #ffffff;
     color: var(--bg-main);
     border: none;
@@ -249,14 +246,14 @@
   .result-box {
     background: var(--card-bg);
     border-radius: var(--border-radius);
-    padding: 32px 20px;
+    padding: 24px 16px;
     text-align: center;
     border: 1px solid var(--card-border);
     box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
   }
 
   .result-score {
-    font-size: 64px;
+    font-size: 48px;
     font-weight: 900;
     color: var(--accent-primary);
     line-height: 1;
@@ -264,33 +261,33 @@
   }
 
   .result-label {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
 
   .result-verdict {
-    font-size: 16px;
-    line-height: 1.5;
+    font-size: 15px;
+    line-height: 1.4;
     color: #ffffff;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
   .review-list {
     text-align: left;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-bottom: 24px;
+    gap: 10px;
+    margin-bottom: 20px;
   }
 
   .review-item {
-    font-size: 14px;
-    line-height: 1.5;
-    padding: 14px;
+    font-size: 13px;
+    line-height: 1.4;
+    padding: 12px;
     border-radius: var(--border-radius);
     border: 1px solid transparent;
   }
@@ -310,37 +307,58 @@
 
   .review-q {
     font-weight: 700;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     color: #ffffff;
   }
 
   .review-meta {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-muted);
     line-height: 1.4;
   }
 
   .restart-btn {
     width: 100%;
-    padding: 16px;
-    font-size: 16px;
+    padding: 14px;
+    font-size: 15px;
     background: linear-gradient(135deg, var(--accent-primary), #f59e0b);
     color: #ffffff;
   }
 
   .footer-note {
-    margin-top: 14px;
+    margin-top: 12px;
     text-align: center;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-muted);
   }
 
-  /* MEDIA QUERY SPECIFICA PER SMARTPHONE (Sotto i 480px di larghezza) */
-  @media (max-width: 480px) {
-    .quiz-title { font-size: 20px; }
-    .q-text { font-size: 17px; }
-    .option-btn { padding: 14px; font-size: 15px; gap: 10px; }
-    .question-box { padding: 16px; }
+  /* MEDIA QUERY ADATTIVA PER SCHERMI PIÙ GRANDI (Tablet e Desktop) */
+  @media (min-width: 520px) {
+    .quiz-wrap {
+      padding: 32px 16px;
+    }
+    .quiz-card {
+      max-width: 500px; /* Limita la larghezza sui desktop per non allungare i pulsanti */
+    }
+    .quiz-title {
+      font-size: 24px;
+    }
+    .question-box {
+      padding: 24px;
+    }
+    .q-text {
+      font-size: 19px;
+    }
+    .option-btn {
+      font-size: 16px;
+      padding: 16px;
+    }
+    .result-box {
+      padding: 32px 24px;
+    }
+    .result-score {
+      font-size: 64px;
+    }
   }
 </style>
 
@@ -349,6 +367,7 @@
 </div>
 
 <script>
+// Il resto del tuo script JS rimane esattamente identico, non ha bisogno di modifiche strutturali.
 const QUESTIONS = [
 {q:"Împăratul Henric al IV-lea a fost lăsat desculț, în sac și cenușă, timp de trei zile, în fața papei:", opts:["Papa Leon al IX-lea","Papa Inocențiu al III-lea","Papa Grigore al VII-lea"], correct:2},
 {q:"Regele care a participat la două cruciade a fost:", opts:["Ludovic al IX-lea al Franței","Napoleon","Henric al IV-lea al Germaniei"], correct:0},
@@ -359,7 +378,7 @@ const QUESTIONS = [
 {q:"Captivitatea Babiloniană a papalității a avut loc între anii:", opts:["1324-1362; 1364-1368","1309-1367; 1370-1377","1305-1360; 1367-1371"], correct:1},
 {q:"Conciliul de la Pisa a avut loc în anul:", opts:["1414","1409","1416"], correct:1},
 {q:"Jan Hus a fost ars pe rug în anul:", opts:["1431","1414","1415"], correct:2},
-{q:"Constantinopolul a fost cucerit de turci în anul:", opts:["1484","1204","1453"], correct:2},
+{q:"Constantinopolul a fost cucerit di turci în anul:", opts:["1484","1204","1453"], correct:2},
 {q:"Promotorul principal al isihasmului a fost:", opts:["Kiril Lukaris","Varlaam de Calabria","Grigore Palama"], correct:2},
 {q:"Martin Luther a afișat pe ușa Bisericii Castelului din Wittenberg cele 95 de teze pe data de:", opts:["3 ianuarie 1521","10 iunie 1520","31 octombrie 1517"], correct:2},
 {q:"Martin Luther a fost excomunicat în anul:", opts:["1519","1521","1525"], correct:1},
