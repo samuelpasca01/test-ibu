@@ -1,532 +1,519 @@
-<!-- VIEWPORT CORRETTA: Rende la pagina 100% responsive su mobile senza bloccare il motore di rendering -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz IBU II</title>
+  <style>
+    :root {
+      --bg-main: #0b0f19;
+      --card-bg: #131a26;
+      --card-border: rgba(255, 255, 255, 0.05);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-primary: #d97706;
+      --accent-secondary: #ef4444;
+      --color-correct: #10b981;
+      --color-correct-bg: rgba(16, 185, 129, 0.12);
+      --color-wrong: #f43f5e;
+      --color-wrong-bg: rgba(244, 63, 94, 0.12);
+      --border-radius: 16px;
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-<style>
-  :root {
-    --bg-main: #0b0f19;
-    --card-bg: #131a26;
-    --card-border: rgba(255, 255, 255, 0.05);
-    --text-main: #f3f4f6;
-    --text-muted: #9ca3af;
-    --accent-primary: #d97706;
-    --accent-secondary: #ef4444;
-    --color-correct: #10b981;
-    --color-correct-bg: rgba(16, 185, 129, 0.12);
-    --color-wrong: #f43f5e;
-    --color-wrong-bg: rgba(244, 63, 94, 0.12);
-    --border-radius: 16px;
-    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-  * {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-  }
+    html, body {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+    }
 
-  html, body {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: var(--bg-main);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: var(--text-main);
-    letter-spacing: -0.01em;
-  }
+    .quiz-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px 8px 32px;
+      width: 100%;
+    }
 
-  /* STRUTTURA MOBILE-FIRST (Predefinita per smartphone) */
-  .quiz-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 16px 8px 32px; /* Margini ridotti al minimo per schermi piccoli */
-    width: 100%;
-  }
+    .quiz-card {
+      width: 100%;
+      max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
-  .quiz-card {
-    width: 100%;
-    max-width: 100%; /* Sfrutta tutto lo spazio dello smartphone */
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
+    .quiz-header {
+      text-align: center;
+      padding: 8px 4px;
+    }
 
-  .quiz-header {
-    text-align: center;
-    padding: 8px 4px;
-  }
+    .quiz-eyebrow {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent-primary);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
 
-  .quiz-eyebrow {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--accent-primary);
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
+    .quiz-title {
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.3;
+      color: #ffffff;
+      margin: 0 0 6px;
+    }
 
-  .quiz-title {
-    font-size: 20px; /* Ottimizzato per non andare a capo troppe volte su mobile */
-    font-weight: 800;
-    line-height: 1.3;
-    color: #ffffff;
-    margin: 0 0 6px;
-  }
+    .quiz-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
 
-  .quiz-sub {
-    font-size: 13px;
-    color: var(--text-muted);
-    line-height: 1.4;
-  }
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card-bg);
+      padding: 12px 14px;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--card-border);
+    }
 
-  .progress-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--card-bg);
-    padding: 12px 14px;
-    border-radius: var(--border-radius);
-    border: 1px solid var(--card-border);
-  }
+    .progress-track {
+      flex: 1;
+      height: 8px;
+      background: #1f2937;
+      border-radius: 99px;
+      overflow: hidden;
+    }
 
-  .progress-track {
-    flex: 1;
-    height: 8px;
-    background: #1f2937;
-    border-radius: 99px;
-    overflow: hidden;
-  }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), #f59e0b);
+      border-radius: 99px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent-primary), #f59e0b);
-    border-radius: 99px;
-    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+    .progress-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      font-variant-numeric: tabular-nums;
+    }
 
-  .progress-label {
-    font-size: 13px;
-    font-weight: 700;
-    color: #ffffff;
-    font-variant-numeric: tabular-nums;
-  }
+    .question-box {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 16px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+    }
 
-  .question-box {
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    padding: 16px; /* Padding interno compatto per mobile */
-    border: 1px solid var(--card-border);
-    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
-  }
+    .q-number {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
 
-  .q-number {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-muted);
-    font-weight: 600;
-    margin-bottom: 8px;
-  }
-
-  .q-text {
-    font-size: 17px; /* Dimensione ideale per la lettura da vicino (smartphone) */
-    line-height: 1.45;
-    margin: 0 0 16px;
-    font-weight: 700;
-    color: #ffffff;
-  }
-
-  .options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .option-btn {
-    text-align: left;
-    font-family: inherit;
-    font-size: 15px; /* Perfetto per l'area di touch minima su mobile */
-    line-height: 1.4;
-    font-weight: 500;
-    padding: 14px 12px;
-    border-radius: var(--border-radius);
-    border: 1.5px solid #1f2937;
-    background: rgba(31, 41, 55, 0.3);
-    color: #e5e7eb;
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    width: 100%;
-  }
-
-  @media (hover: hover) {
-    .option-btn:hover:not(:disabled) {
-      border-color: var(--accent-primary);
-      background: rgba(31, 41, 55, 0.6);
+    .q-text {
+      font-size: 17px;
+      line-height: 1.45;
+      margin: 0 0 16px;
+      font-weight: 700;
       color: #ffffff;
     }
-  }
 
-  .option-btn:active:not(:disabled) {
-    transform: scale(0.98);
-  }
-
-  .option-letter {
-    font-weight: 700;
-    color: var(--text-muted);
-    background: #1f2937;
-    width: 26px;
-    height: 26px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    flex-shrink: 0;
-  }
-
-  .option-btn.correct {
-    background: var(--color-correct-bg) !important;
-    border-color: var(--color-correct) !important;
-    color: #ffffff;
-  }
-  .option-btn.correct .option-letter {
-    background: var(--color-correct);
-    color: #000000;
-  }
-
-  .option-btn.wrong {
-    background: var(--color-wrong-bg) !important;
-    border-color: var(--color-wrong) !important;
-    color: #ffffff;
-  }
-  .option-btn.wrong .option-letter {
-    background: var(--color-wrong);
-    color: #ffffff;
-  }
-
-  .option-btn.dim {
-    opacity: 0.15;
-  }
-
-  .feedback-row {
-    margin-top: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    min-height: 44px;
-    border-top: 1px solid #1f2937;
-    padding-top: 14px;
-  }
-
-  .feedback-msg {
-    font-weight: 700;
-    font-size: 15px;
-  }
-  .feedback-msg.good { color: var(--color-correct); }
-  .feedback-msg.bad { color: var(--color-wrong); }
-
-  .next-btn, .restart-btn {
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 10px 16px;
-    background: #ffffff;
-    color: var(--bg-main);
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: var(--transition);
-    white-space: nowrap;
-  }
-
-  .result-box {
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    padding: 24px 16px;
-    text-align: center;
-    border: 1px solid var(--card-border);
-    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
-  }
-
-  .result-score {
-    font-size: 48px;
-    font-weight: 900;
-    color: var(--accent-primary);
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-
-  .result-label {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 12px;
-  }
-
-  .result-verdict {
-    font-size: 15px;
-    line-height: 1.4;
-    color: #ffffff;
-    margin-bottom: 20px;
-  }
-
-  .review-list {
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-
-  .review-item {
-    font-size: 13px;
-    line-height: 1.4;
-    padding: 12px;
-    border-radius: var(--border-radius);
-    border: 1px solid transparent;
-  }
-  
-  .review-item.miss {
-    background: #171725;
-    border-color: rgba(244, 63, 94, 0.2);
-  }
-  
-  .review-item.hit {
-    background: var(--color-correct-bg);
-    border-color: rgba(16, 185, 129, 0.2);
-    text-align: center;
-    font-weight: 600;
-    color: var(--color-correct);
-  }
-
-  .review-q {
-    font-weight: 700;
-    margin-bottom: 4px;
-    color: #ffffff;
-  }
-
-  .review-meta {
-    font-size: 12px;
-    color: var(--text-muted);
-    line-height: 1.4;
-  }
-
-  .restart-btn {
-    width: 100%;
-    padding: 14px;
-    font-size: 15px;
-    background: linear-gradient(135deg, var(--accent-primary), #f59e0b);
-    color: #ffffff;
-  }
-
-  .footer-note {
-    margin-top: 12px;
-    text-align: center;
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-
-  /* MEDIA QUERY ADATTIVA PER SCHERMI PIÙ GRANDI (Tablet e Desktop) */
-  @media (min-width: 520px) {
-    .quiz-wrap {
-      padding: 32px 16px;
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
-    .quiz-card {
-      max-width: 500px; /* Limita la larghezza sui desktop per non allungare i pulsanti */
-    }
-    .quiz-title {
-      font-size: 24px;
-    }
-    .question-box {
-      padding: 24px;
-    }
-    .q-text {
-      font-size: 19px;
-    }
+
     .option-btn {
-      font-size: 16px;
-      padding: 16px;
+      text-align: left;
+      font-family: inherit;
+      font-size: 15px;
+      line-height: 1.4;
+      font-weight: 500;
+      padding: 14px 12px;
+      border-radius: var(--border-radius);
+      border: 1.5px solid #1f2937;
+      background: rgba(31, 41, 55, 0.3);
+      color: #e5e7eb;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
     }
+
+    @media (hover: hover) {
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--accent-primary);
+        background: rgba(31, 41, 55, 0.6);
+        color: #ffffff;
+      }
+    }
+
+    .option-btn:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .option-letter {
+      font-weight: 700;
+      color: var(--text-muted);
+      background: #1f2937;
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .option-btn.correct {
+      background: var(--color-correct-bg) !important;
+      border-color: var(--color-correct) !important;
+      color: #ffffff;
+    }
+    .option-btn.correct .option-letter {
+      background: var(--color-correct);
+      color: #000000;
+    }
+
+    .option-btn.wrong {
+      background: var(--color-wrong-bg) !important;
+      border-color: var(--color-wrong) !important;
+      color: #ffffff;
+    }
+    .option-btn.wrong .option-letter {
+      background: var(--color-wrong);
+      color: #ffffff;
+    }
+
+    .option-btn.dim {
+      opacity: 0.15;
+    }
+
+    .feedback-row {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      min-height: 44px;
+      border-top: 1px solid #1f2937;
+      padding-top: 14px;
+    }
+
+    .feedback-msg {
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .feedback-msg.good { color: var(--color-correct); }
+    .feedback-msg.bad { color: var(--color-wrong); }
+
+    .next-btn, .restart-btn {
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 16px;
+      background: #ffffff;
+      color: var(--bg-main);
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
     .result-box {
-      padding: 32px 24px;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 24px 16px;
+      text-align: center;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
     }
+
     .result-score {
-      font-size: 64px;
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--accent-primary);
+      line-height: 1;
+      margin-bottom: 8px;
     }
-  }
-</style>
 
-<div class="quiz-wrap">
-  <div class="quiz-card" id="app"></div>
-</div>
+    .result-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
 
-<script>
-// Il resto del tuo script JS rimane esattamente identico, non ha bisogno di modifiche strutturali.
-const QUESTIONS = [
-{q:"Împăratul Henric al IV-lea a fost lăsat desculț, în sac și cenușă, timp de trei zile, în fața papei:", opts:["Papa Leon al IX-lea","Papa Inocențiu al III-lea","Papa Grigore al VII-lea"], correct:2},
-{q:"Regele care a participat la două cruciade a fost:", opts:["Ludovic al IX-lea al Franței","Napoleon","Henric al IV-lea al Germaniei"], correct:0},
-{q:"Imperiul latin de Răsărit a dăinuit între anii:", opts:["1204-1261","1431-1449","1324-1377"], correct:0},
-{q:"Cea de-a patra cruciadă a avut ca rezultat:", opts:["Cucerirea Ierusalimului","Cucerirea Cartaginei","Cucerirea Constantinopolului"], correct:2},
-{q:"Desființarea ordinului cavalerilor templieri a fost inițiată di:", opts:["Împăratul Carol al V-lea","Regele Franței Filip al IV-lea","Regele Angliei Ioan fără de Țară"], correct:1},
-{q:"Ordinul monahal pentru femei similar cu cel franciscan s-a numit:", opts:["Ordinul cluniac","Săracele Clare","Ordinul ursulinelor"], correct:1},
-{q:"Captivitatea Babiloniană a papalității a avut loc între anii:", opts:["1324-1362; 1364-1368","1309-1367; 1370-1377","1305-1360; 1367-1371"], correct:1},
-{q:"Conciliul de la Pisa a avut loc în anul:", opts:["1414","1409","1416"], correct:1},
-{q:"Jan Hus a fost ars pe rug în anul:", opts:["1431","1414","1415"], correct:2},
-{q:"Constantinopolul a fost cucerit di turci în anul:", opts:["1484","1204","1453"], correct:2},
-{q:"Promotorul principal al isihasmului a fost:", opts:["Kiril Lukaris","Varlaam de Calabria","Grigore Palama"], correct:2},
-{q:"Martin Luther a afișat pe ușa Bisericii Castelului din Wittenberg cele 95 de teze pe data de:", opts:["3 ianuarie 1521","10 iunie 1520","31 octombrie 1517"], correct:2},
-{q:"Martin Luther a fost excomunicat în anul:", opts:["1519","1521","1525"], correct:1},
-{q:"Pentru protecție reciprocă, principii protestanți au format:", opts:["Liga de la Schmalkalden","Liga teutonică","Liga de la Wittenberg"], correct:0},
-{q:"Orașul reformei lui Huldreich Zwingli a fost:", opts:["Zurich","Basel","Constanța"], correct:0},
-{q:"Reprezentantul principal al mișcării anabaptiste din Țările de Jos a fost:", opts:["Theodore Beza","Menno Simons","Philip Schwarzerd Melanchthon"], correct:1},
-{q:"Succesorul reformator al lui Calvin la Geneva a fost:", opts:["Theodore Beza","Johannes Eck","Johann Heinrich Bullinger"], correct:0},
-{q:"Adepții lui Iacobus Arminius și-au publicat ideile în scrierea numită:", opts:["Defensor pacis (Apărătorul păcii)","Protestatio (Mărturisire)","Remonstratio (Protest)"], correct:2},
-{q:"Cel mai important rol în acțiunile di contrareformă l-a avut ordinul monahal:", opts:["Ioanit","Iezuit","Franciscan"], correct:1},
-{q:"Războiul de 30 de ani s-a încheiat prin:", opts:["Pacea di la Westfalia","Pacea di la Augsburg","Pacea di la Geneva"], correct:0},
-{q:"Inițiatorul pietismului german a fost:", opts:["Philip Iacob Spener","Nicolas Storch","Philip Schwarzerd Melanchthon"], correct:0},
-{q:"Fondatorul metodismului a fost:", opts:["Jan Hus","John Wesley","George Whitefield"], correct:1},
-{q:"Patriarhul Constantinopolului care a simpatizat cu protestantismul a fost:", opts:["Kiril Kontaris","Khiril Lukaris","Ignatie al III-lea"], correct:1},
-{q:"Data la care se consideră că a luat naștere mișcarea penticostală modernă este:", opts:["3 aprilie 1960","1 ianuarie 1901","7 noiembrie 1907"], correct:1},
-{q:"William Joseph Seymour este cunoscut pentru trezirea spirituală de pe strada:", opts:["Renașterii","Azussa","Milton"], correct:1}
-];
+    .result-verdict {
+      font-size: 15px;
+      line-height: 1.4;
+      color: #ffffff;
+      margin-bottom: 20px;
+    }
 
-function shuffle(arr){
-  const a = arr.slice();
-  for(let i=a.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
-  return a;
-}
+    .review-list {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
 
-let order = shuffle(QUESTIONS.map((_,i)=>i));
-let current = 0;
-let score = 0;
-let answered = false;
-let selectedIdx = null;
-let missedItems = [];
+    .review-item {
+      font-size: 13px;
+      line-height: 1.4;
+      padding: 12px;
+      border-radius: var(--border-radius);
+      border: 1px solid transparent;
+    }
+    
+    .review-item.miss {
+      background: #171725;
+      border-color: rgba(244, 63, 94, 0.2);
+    }
+    
+    .review-item.hit {
+      background: var(--color-correct-bg);
+      border-color: rgba(16, 185, 129, 0.2);
+      text-align: center;
+      font-weight: 600;
+      color: var(--color-correct);
+    }
 
-const letters = ['A','B','C'];
-const app = document.getElementById('app');
+    .review-q {
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #ffffff;
+    }
 
-function render(){
-  if(current >= order.length){
-    renderResult();
-    return;
-  }
-  const qIdx = order[current];
-  const q = QUESTIONS[qIdx];
-  const pct = Math.round((current/order.length)*100);
+    .review-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
 
-  app.innerHTML = `
-    <div class="quiz-header">
-      <div class="quiz-eyebrow">Examen IBU II · Recapitulare</div>
-      <div class="quiz-title">Reforma, Contrareforma și Trezirile Spirituale</div>
-      <div class="quiz-sub">25 de întrebări din materia de examen</div>
-    </div>
-    <div class="progress-row">
-      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
-      <div class="progress-label">${current+1} / ${order.length}</div>
-    </div>
-    <div class="question-box">
-      <div class="q-number">Întrebarea ${current+1}</div>
-      <p class="q-text">${q.q}</p>
-      <div class="options" id="options"></div>
-      <div class="feedback-row" id="feedback-row"></div>
-    </div>
-  `;
+    .restart-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 15px;
+      background: linear-gradient(135deg, var(--accent-primary), #f59e0b);
+      color: #ffffff;
+    }
 
-  const optsWrap = document.getElementById('options');
-  q.opts.forEach((opt, i)=>{
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
-    btn.onclick = () => selectAnswer(i);
-    optsWrap.appendChild(btn);
-  });
-}
+    .footer-note {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
 
-function selectAnswer(i){
-  if(answered) return;
-  answered = true;
-  selectedIdx = i;
-  const qIdx = order[current];
-  const q = QUESTIONS[qIdx];
-  const correct = i === q.correct;
-  if(correct) score++;
-  else missedItems.push({q: q.q, yours: q.opts[i], right: q.opts[q.correct]});
+    @media (min-width: 520px) {
+      .quiz-wrap { padding: 32px 16px; }
+      .quiz-card { max-width: 500px; }
+      .quiz-title { font-size: 24px; }
+      .question-box { padding: 24px; }
+      .q-text { font-size: 19px; }
+      .option-btn { font-size: 16px; padding: 16px; }
+      .result-box { padding: 32px 24px; }
+      .result-score { font-size: 64px; }
+    }
+  </style>
+</head>
+<body>
 
-  const buttons = document.querySelectorAll('.option-btn');
-  buttons.forEach((b, idx)=>{
-    b.disabled = true;
-    if(idx === q.correct) b.classList.add('correct');
-    else if(idx === i) b.classList.add('wrong');
-    else b.classList.add('dim');
-  });
+  <div class="quiz-wrap">
+    <div class="quiz-card" id="app"></div>
+  </div>
 
-  const row = document.getElementById('feedback-row');
-  row.innerHTML = `
-    <span class="feedback-msg ${correct ? 'good':'bad'}">${correct ? '✓ Corect' : '✕ Incorect'}</span>
-    <button class="next-btn" id="next-btn">${current+1 < order.length ? 'Următoarea →' : 'Rezultat →'}</button>
-  `;
-  document.getElementById('next-btn').onclick = () => {
-    current++;
-    answered = false;
-    selectedIdx = null;
+  <script>
+    const QUESTIONS = [
+      {q:"Împăratul Henric al IV-lea a fost lăsat desculț, în sac și cenușă, timp de trei zile, în fața papei:", opts:["Papa Leon al IX-lea","Papa Inocențiu al III-lea","Papa Grigore al VII-lea"], correct:2},
+      {q:"Regele care a participat la două cruciade a fost:", opts:["Ludovic al IX-lea al Franței","Napoleon","Henric al IV-lea al Germaniei"], correct:0},
+      {q:"Imperiul latin de Răsărit a dăinuit între anii:", opts:["1204-1261","1431-1449","1324-1377"], correct:0},
+      {q:"Cea de-a patra cruciadă a avut ca rezultat:", opts:["Cucerirea Ierusalimului","Cucerirea Cartaginei","Cucerirea Constantinopolului"], correct:2},
+      {q:"Desființarea ordinului cavalerilor templieri a fost inițiată di:", opts:["Împăratul Carol al V-lea","Regele Franței Filip al IV-lea","Regele Angliei Ioan fără de Țară"], correct:1},
+      {q:"Ordinul monahal pentru femei similar cu cel franciscan s-a numit:", opts:["Ordinul cluniac","Săracele Clare","Ordinul ursulinelor"], correct:1},
+      {q:"Captivitatea Babiloniană a papalității a avut loc între anii:", opts:["1324-1362; 1364-1368","1309-1367; 1370-1377","1305-1360; 1367-1371"], correct:1},
+      {q:"Conciliul de la Pisa a avut loc în anul:", opts:["1414","1409","1416"], correct:1},
+      {q:"Jan Hus a fost ars pe rug în anul:", opts:["1431","1414","1415"], correct:2},
+      {q:"Constantinopolul a fost cuzit di turci în anul:", opts:["1484","1204","1453"], correct:2},
+      {q:"Promotorul principal al isihasmului a fost:", opts:["Kiril Lukaris","Varlaam de Calabria","Grigore Palama"], correct:2},
+      {q:"Martin Luther a afișat pe ușa Bisericii Castelului din Wittenberg cele 95 de teze pe data de:", opts:["3 ianuarie 1521","10 iunie 1520","31 octombrie 1517"], correct:2},
+      {q:"Martin Luther a fost excomunicat în anul:", opts:["1519","1521","1525"], correct:1},
+      {q:"Pentru protecție reciprocă, principii protestanți au format:", opts:["Liga de la Schmalkalden","Liga teutonică","Liga de la Wittenberg"], correct:0},
+      {q:"Orașul reformei lui Huldreich Zwingli a fost:", opts:["Zurich","Basel","Constanța"], correct:0},
+      {q:"Reprezentantul principal al mișcării anabaptiste din Țările de Jos a fost:", opts:["Theodore Beza","Menno Simons","Philip Schwarzerd Melanchthon"], correct:1},
+      {q:"Succesorul reformator al lui Calvin la Geneva a fost:", opts:["Theodore Beza","Johannes Eck","Johann Heinrich Bullinger"], correct:0},
+      {q:"Adepții lui Iacobus Arminius și-au publicat ideile în scrierea numită:", opts:["Defensor pacis (Apărătorul păcii)","Protestatio (Mărturisire)","Remonstratio (Protest)"], correct:2},
+      {q:"Cel mai important rol în acțiunile di contrareformă l-a avut ordinul monahal:", opts:["Ioanit","Iezuit","Franciscan"], correct:1},
+      {q:"Războiul de 30 de ani s-a încheiat prin:", opts:["Pacea di la Westfalia","Pacea di la Augsburg","Pacea di la Geneva"], correct:0},
+      {q:"Inițiatorul pietismului german a fost:", opts:["Philip Iacob Spener","Nicolas Storch","Philip Schwarzerd Melanchthon"], correct:0},
+      {q:"Fondatorul metodismului a fost:", opts:["Jan Hus","John Wesley","George Whitefield"], correct:1},
+      {q:"Patriarhul Constantinopolului care a simpatizat cu protestantismul a fost:", opts:["Kiril Kontaris","Khiril Lukaris","Ignatie al III-lea"], correct:1},
+      {q:"Data la care se consideră că a luat naștere mișcarea penticostală modernă este:", opts:["3 aprilie 1960","1 ianuarie 1901","7 noiembrie 1907"], correct:1},
+      {q:"William Joseph Seymour este cunoscut pentru trezirea spirituală de pe strada:", opts:["Renașterii","Azussa","Milton"], correct:1}
+    ];
+
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    let order = shuffle(QUESTIONS.map((_, i) => i));
+    let current = 0;
+    let score = 0;
+    let answered = false;
+    let selectedIdx = null;
+    let missedItems = [];
+
+    const letters = ['A', 'B', 'C'];
+    const app = document.getElementById('app');
+
+    function render() {
+      if (current >= order.length) {
+        renderResult();
+        return;
+      }
+      const qIdx = order[current];
+      const q = QUESTIONS[qIdx];
+      const pct = Math.round((current / order.length) * 100);
+
+      app.innerHTML = `
+        <div class="quiz-header">
+          <div class="quiz-eyebrow">Examen IBU II - Recapitulare</div>
+          <div class="quiz-title">Reforma, Contrareforma si Trezirile Spirituale</div>
+          <div class="quiz-sub">25 de intrebari din materia de examen</div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+          <div class="progress-label">${current + 1} / ${order.length}</div>
+        </div>
+        <div class="question-box">
+          <div class="q-number">Intrebarea ${current + 1}</div>
+          <p class="q-text">${q.q}</p>
+          <div class="options" id="options"></div>
+          <div class="feedback-row" id="feedback-row"></div>
+        </div>
+      `;
+
+      const optsWrap = document.getElementById('options');
+      q.opts.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
+        btn.onclick = () => selectAnswer(i);
+        optsWrap.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(i) {
+      if (answered) return;
+      answered = true;
+      selectedIdx = i;
+      const qIdx = order[current];
+      const q = QUESTIONS[qIdx];
+      const correct = i === q.correct;
+      if (correct) score++;
+      else missedItems.push({ q: q.q, yours: q.opts[i], right: q.opts[q.correct] });
+
+      const buttons = document.querySelectorAll('.option-btn');
+      buttons.forEach((b, idx) => {
+        b.disabled = true;
+        if (idx === q.correct) b.classList.add('correct');
+        else if (idx === i) b.classList.add('wrong');
+        else b.classList.add('dim');
+      });
+
+      const row = document.getElementById('feedback-row');
+      row.innerHTML = `
+        <span class="feedback-msg ${correct ? 'good' : 'bad'}">${correct ? '✓ Corect' : '✕ Incorect'}</span>
+        <button class="next-btn" id="next-btn">${current + 1 < order.length ? 'Următoarea →' : 'Rezultat →'}</button>
+      `;
+      document.getElementById('next-btn').onclick = () => {
+        current++;
+        answered = false;
+        selectedIdx = null;
+        render();
+      };
+    }
+
+    function renderResult() {
+      const pct = Math.round((score / order.length) * 100);
+      let verdict;
+      if (pct === 100) verdict = "Perfect — ești gata pentru examen.";
+      else if (pct >= 80) verdict = "Foarte bine — mai repetă puțin punctele slabe.";
+      else if (pct >= 60) verdict = "Un început bun, dar mai ai de recapitulat.";
+      else verdict = "Merită o rundă în plus de recapitulare.";
+
+      let reviewHtml = '';
+      if (missedItems.length) {
+        reviewHtml = '<div class="review-list">' + missedItems.map(m => `
+          <div class="review-item miss">
+            <div class="review-q">${m.q}</div>
+            <div class="review-meta">Răspunsul tău: <span style="color:var(--color-wrong); font-weight:600">${m.yours}</span><br>Răspuns corect: <span style="color:var(--color-correct); font-weight:600">${m.right}</span></div>
+          </div>
+        `).join('') + '</div>';
+      } else {
+        reviewHtml = '<div class="review-list"><div class="review-item hit">Excelent! Ai răspuns corect la toate întrebările. 🎉</div></div>';
+      }
+
+      app.innerHTML = `
+        <div class="quiz-header">
+          <div class="quiz-eyebrow">Examen IBU II - Rezultat</div>
+          <div class="quiz-title">Reforma, Contrareforma si Trezirile Spirituale</div>
+        </div>
+        <div class="result-box">
+          <div class="result-score">${score}/${order.length}</div>
+          <div class="result-label">${pct}% Scor Final</div>
+          <div class="result-verdict">${verdict}</div>
+          ${reviewHtml}
+          <button class="restart-btn" id="restart-btn">Reîncepe Testul</button>
+          <div class="footer-note">Întrebările sunt amestecate la fiecare încercare.</div>
+        </div>
+      `;
+      document.getElementById('restart-btn').onclick = () => {
+        order = shuffle(QUESTIONS.map((_, i) => i));
+        current = 0;
+        score = 0;
+        answered = false;
+        selectedIdx = null;
+        missedItems = [];
+        render();
+      };
+    }
+
     render();
-  };
-}
-
-function renderResult(){
-  const pct = Math.round((score/order.length)*100);
-  let verdict;
-  if(pct === 100) verdict = "Perfect — ești gata pentru examen.";
-  else if(pct >= 80) verdict = "Foarte bine — mai repetă puțin punctele slabe.";
-  else if(pct >= 60) verdict = "Un început bun, dar mai ai di recapitulat.";
-  else verdict = "Merită o rundă în plus de recapitulare.";
-
-  let reviewHtml = '';
-  if(missedItems.length){
-    reviewHtml = '<div class="review-list">' + missedItems.map(m => `
-      <div class="review-item miss">
-        <div class="review-q">${m.q}</div>
-        <div class="review-meta">Răspunsul tău: <span style="color:var(--color-wrong); font-weight:600">${m.yours}</span><br>Răspuns corect: <span style="color:var(--color-correct); font-weight:600">${m.right}</span></div>
-      </div>
-    `).join('') + '</div>';
-  } else {
-    reviewHtml = '<div class="review-list"><div class="review-item hit">Excelent! Ai răspuns corect la toate întrebările. 🎉</div></div>';
-  }
-
-  app.innerHTML = `
-    <div class="quiz-header">
-      <div class="quiz-eyebrow">Examen IBU II · Rezultat</div>
-      <div class="quiz-title">Reforma, Contrareforma și Trezirile Spirituale</div>
-    </div>
-    <div class="result-box">
-      <div class="result-score">${score}/${order.length}</div>
-      <div class="result-label">${pct}% Scor Final</div>
-      <div class="result-verdict">${verdict}</div>
-      ${reviewHtml}
-      <button class="restart-btn" id="restart-btn">Reîncepe Testul</button>
-      <div class="footer-note">Întrebările sunt amestecate la fiecare încercare.</div>
-    </div>
-  `;
-  document.getElementById('restart-btn').onclick = () => {
-    order = shuffle(QUESTIONS.map((_,i)=>i));
-    current = 0;
-    score = 0;
-    answered = false;
-    selectedIdx = null;
-    missedItems = [];
-    render();
-  };
-}
-
-render();
-</script>
+  </script>
+</body>
+</html>
